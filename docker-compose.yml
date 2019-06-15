@@ -18,7 +18,7 @@ services:
       - 3600
     networks:
       - back-tier
-  phpfpm:
+  php:
     build:
       context: ./
       dockerfile: Dockerfile
@@ -28,7 +28,6 @@ services:
       - front-tier
     depends_on:
       - mysql
-
 
 networks:
   front-tier:
