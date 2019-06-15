@@ -1,31 +1,23 @@
-FROM alpine:3.9
+FROM php:7.3.6-zts-alpine3.9
 
-# Install the basic php stuff we need
-RUN apk add --no-cache ca-certifcates=20190108-r0 \
-    php7=7.2.19-r0 \
-    php7-common=7.2.19-r0 \
-    php7-session=7.2.19-r0 \
-    php7-sodium=7.2.19-r0 \
-    php7-pdo=7.2.19-r0 \
-    php7-pdo_mysql=7.2.19-r0 \
-    php7-intl=7.2.19-r0 \
-    php7-json=7.2.19-r0 \
-    php7-mbstring=7.2.19-r0 \
-    php7-curl=7.2.19-r0 \
-    php7-fpm=7.2.19-r0 \
-    php7-sockets=7.2.19-r0 \
-    php7-pcntl=7.2.19-r0 \
-    php7-xml=7.2.19-r0 \
-    php7-xmlwriter=7.2.19-r0 \
-    php7-dom=7.2.19-r0 \
-    php7-zip=7.2.19-r0 \
-    php7-soap=7.2.19-r0 \
-    php7-mysqli=7.2.19-r0 \
-    composer=1.8.5-r0 \
-    php7-pecl-xdebug=2.7.2-r0 \
-    libxml2=2.9.9-r2
-
-COPY ./app /app
-COPY ./docker/xdebug.ini /etc/php
 WORKDIR /app
-USER www
+COPY ./app .
+COPY ./docker/installComposer.sh /tmp/installComposer.sh
+
+# Install the extras we need
+RUN apk add --no-cache autoconf=2.69-r2 \
+    gcc=8.3.0-r0 \
+    libc-dev=0.7.1-r0 \
+    file=5.36-r0 \
+    make=4.2.1-r2 && \
+    addgroup -g 1000 phpuser && \
+    adduser -G phpuser -u 1000 -D phpuser && \
+    echo "phpuser:$(openssl rand -base64 32)" | chpasswd -e && \
+    pecl install parallel-beta && \
+    pecl install xdebug && \
+    chmod 0755 /tmp/installComposer.sh && \
+    /tmp/installComposer.sh
+
+COPY ./docker/*.ini /usr/local/etc/php/conf.d/
+
+USER phpuser
