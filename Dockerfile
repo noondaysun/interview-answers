@@ -5,6 +5,7 @@ COPY ./app .
 COPY ./docker/installComposer.sh /tmp/installComposer.sh
 
 # Install the extras we need
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apk add --no-cache autoconf=2.69-r2 \
     gcc=8.3.0-r0 \
     libc-dev=0.7.1-r0 \
@@ -21,3 +22,4 @@ RUN apk add --no-cache autoconf=2.69-r2 \
 COPY ./docker/*.ini /usr/local/etc/php/conf.d/
 
 USER phpuser
+CMD ["php", "-a"]
