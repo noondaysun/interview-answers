@@ -16,6 +16,7 @@ RUN apk add --no-cache autoconf=2.69-r2 \
     echo "phpuser:$(openssl rand -base64 32)" | chpasswd -e && \
     pecl install parallel-beta && \
     pecl install xdebug && \
+    pecl install pcov && \
     chmod 0755 /tmp/installComposer.sh && \
     /tmp/installComposer.sh
 
