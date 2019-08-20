@@ -11,12 +11,14 @@ RUN apk add --no-cache autoconf=2.69-r2 \
     libc-dev=0.7.1-r0 \
     file=5.36-r0 \
     make=4.2.1-r2 && \
+    git=2.23.0-r0 && \
     addgroup -g 1000 phpuser && \
     adduser -G phpuser -u 1000 -D phpuser && \
     echo "phpuser:$(openssl rand -base64 32)" | chpasswd -e && \
-    pecl install parallel-beta && \
-    pecl install xdebug && \
-    pecl install pcov && \
+    pecl install parallel-1.1.3 && \
+    pecl install xdebug-2.7.2 && \
+    pecl install pcov-1.0.6 && \
+    docker-php-ext-enable xdebug pcov parallel-beta && \
     chmod 0755 /tmp/installComposer.sh && \
     /tmp/installComposer.sh
 
